@@ -1,0 +1,118 @@
+{% extends "nav.html" %}
+{% block body %}        
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <form class="form-inline">
+                <div class="form-group">
+                    <select class="form-control" name="ip">
+                        {% for i in machine_obj %}
+                            {% if i['ip'] == ip %}
+                                <option selected>{{i['ip']}}</option>
+                            {% else %}
+                                <option>{{i['ip']}}</option>
+                            {% end %}
+                        {% end %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="container_id">
+                        {% for i in container_obj %}
+                        <option>{{i['container_id']}}</option>
+                       {% end %}
+                    </select>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div id="mem_percent" style="width:98%;height:300px"></div><br/>
+    <div id="cpu_percent" style="width:98%;height:300px"></div><br/>
+
+</div>
+
+<script>
+    $("select[name=ip]").change(function(){
+        ip=$(this).val()
+        url="containers_status?action=select&ip="+ip+"&container_id="
+        window.location.replace(url);
+    })
+    function create_charts(div,title,series,point,background_color){
+     // Create the chart
+        $('#'+div).highcharts('StockChart', {
+            chart: {
+                backgroundColor: background_color
+            },
+            plotOptions: {
+                series: {
+                    animation: false
+                }
+            },
+            tooltip: {
+                formatter: function(){
+                    return this.y.toFixed(2)+" "+point
+                    //return this.y.toFixed(2)+" "+point
+                }
+            },
+            yAxis: {
+                opposite: false,
+                labels: {
+                    formatter: function() {
+                        if(div == "container_network"){
+                            if(this.value > 1024){
+                              return (this.value /1024).toFixed(0) +" "+"Mb/s";
+                            }else{
+                              return this.value +" "+point;
+                            }
+                        }else{
+                            return this.value +" "+point;
+                        }
+                        
+                    }
+                }
+            },
+            legend: {
+                enabled: true
+            },        
+            credits: {
+                enabled: false
+            },
+            rangeSelector:{
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            navigator: {
+                enabled: false
+            },
+            title : {
+                align:'left',
+                text:title
+            },
+            series:series
+        });
+    }
+    function charts(container_id){
+        $.getJSON('monitor?action=monitor&container_id='+container_id+'&datetime=', function (data) {
+            series=[{name:'CPU使用率',data:data.cpu_percent,type:'line'}]
+            create_charts("cpu_percent","CPU使用率",series,"%")
+
+            series=[{name:'内存使用率',data:data.mem_percent,type:'line'}]
+            create_charts("mem_percent","内存使用率",series,"%")
+        });
+        setTimeout("charts()", 60000);
+    }
+    $(function(){
+        container_id=$("select[name=container_id]").val()
+        charts(container_id)
+    })
+    $("select[name=container_id]").change(function(){
+        container_id=$(this).val()
+        charts(container_id)
+    })
+//}
+</script>
+{% end %}

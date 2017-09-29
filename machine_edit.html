@@ -1,0 +1,49 @@
+{% extends "nav.html" %}
+{% block body %}        
+<div class="well well-sm well_row">
+
+    <form class="form_row" action="./machine_info?action=edit&sid={{sid}}" method="post">
+        <div class="form-group">
+            <label for="">
+                机房/机柜
+            </label>
+            <input type="text" class="form-control" name="area" placeholder="" value="{{machine_json['area']}}">
+        </div>
+        <div class="form-group">
+            <label for="">
+                主机
+            </label>
+            <input type="text" class="form-control" name="ip" placeholder="" value="{{machine_json['ip']}}">
+        </div>
+        <div class="form-group">
+            <label for="">
+                端口
+            </label>
+            <input type="text" class="form-control" name="port" placeholder="" value="{{machine_json['port']}}">
+        </div>
+        <div class="form-group">
+            <label for="">
+                状态
+            </label>
+            <select class="form-control" name="status">
+                {% if machine_json['status'] == u"监控"%}
+                <option selected>监控</option>
+                <option>不监控</option>
+                {% else %}
+                <option>监控</option>
+                <option selected>不监控</option>
+                {% end %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">
+                备注
+            </label>
+            <input type="text" class="form-control" name="remarks" placeholder="" value="{{machine_json['remarks']}}">
+        </div>
+        <button type="submit" class="btn btn-default">
+            提交
+        </button>
+    </form>
+</div>
+{% end %}
