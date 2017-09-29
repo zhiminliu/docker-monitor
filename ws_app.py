@@ -22,13 +22,9 @@ from docker import Client
 
 class mysql_cmd():
     def __init__(self):
-        #self.ip='192.168.235.94'
-        self.ip='dbhost'#数据库ip
-        #self.user='root'
-        self.user='user'#数据库用户
-        #self.passwd='biostime123'    
+        self.ip='127.0.0.1'#数据库ip
+        self.user='root'#数据库用户
         self.passwd='123456'#数据库密码
-        #self.dbs='docker_admin'
         self.dbs='docker_admin'#数据库库名
         self.db=MySQLdb.connect(self.ip,self.user,self.passwd,self.dbs,charset="utf8",cursorclass=MySQLdb.cursors.DictCursor)
         self.cursor=self.db.cursor()
