@@ -103,7 +103,7 @@
             series=[{name:'内存使用率',data:data.mem_percent,type:'line'}]
             create_charts("mem_percent","内存使用率",series,"%")
         });
-        setTimeout("charts()", 60000);
+        setTimeout("charts('"+container_id+"')", 60000);
     }
     $(function(){
         container_id=$("select[name=container_id]").val()
